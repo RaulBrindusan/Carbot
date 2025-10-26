@@ -26,6 +26,7 @@ interface Car {
   totalCost: number;
   endAuctionPrice: number;
   auto1Link?: string;
+  url?: string;
 }
 
 export async function POST(request: Request) {
@@ -107,23 +108,31 @@ export async function POST(request: Request) {
     const textContent = `
 Top 10 Most Profitable Cars
 
-${topCars.map((car, index) => `${index + 1}. ${car.makeModel} (${car.year})
+${topCars.map((car, index) => {
+  const carUrl = car.url || car.auto1Link;
+  return `${index + 1}. ${car.makeModel} (${car.year})
    Profit: ${formatCurrency(car.profit)} (${car.profitPercentage?.toFixed(1)}%)
    Cost: ${formatCurrency(car.totalCost)} | Auction: ${formatCurrency(car.endAuctionPrice)}
-   ${car.auto1Link ? `Link: ${car.auto1Link}` : ''}`).join('\n\n')}
+   ${carUrl ? `Link: ${carUrl}` : ''}`;
+}).join('\n\n')}
 
 ${topCars.length === 0 ? 'No profitable cars found at this time.' : ''}
-
-Visit Auto1 to find great deals: https://www.auto1.com
 
 Sent at: ${new Date().toLocaleString()}
     `;
 
     // Generate HTML table rows for cars
-    const carsHtmlRows = topCars.map((car, index) => `
+    const carsHtmlRows = topCars.map((car, index) => {
+      const carUrl = car.url || car.auto1Link;
+      const carTitle = `${index + 1}. ${car.makeModel} (${car.year})`;
+
+      return `
       <tr>
         <td style="padding: 15px; background-color: #f8f9fa; border-left: 4px solid #667eea;">
-          <strong style="color: #667eea; font-size: 18px;">${index + 1}. ${car.makeModel} (${car.year})</strong>
+          ${carUrl ?
+            `<a href="${carUrl}" style="text-decoration: none;"><strong style="color: #667eea; font-size: 18px;">${carTitle}</strong></a>` :
+            `<strong style="color: #667eea; font-size: 18px;">${carTitle}</strong>`
+          }
           <p style="margin: 5px 0 0 0; color: #666;">${car.fullTitle || ''}</p>
           <div style="margin-top: 10px; display: flex; gap: 15px; flex-wrap: wrap;">
             <span style="color: #28a745; font-weight: bold;">Profit: ${formatCurrency(car.profit)}</span>
@@ -131,14 +140,11 @@ Sent at: ${new Date().toLocaleString()}
             <span style="color: #666;">Cost: ${formatCurrency(car.totalCost)}</span>
             <span style="color: #666;">Auction: ${formatCurrency(car.endAuctionPrice)}</span>
           </div>
-          ${car.auto1Link ? `
-          <div style="margin-top: 10px;">
-            <a href="${car.auto1Link}" style="display: inline-block; padding: 8px 16px; background-color: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">View on Auto1</a>
-          </div>` : ''}
         </td>
       </tr>
       <tr><td style="height: 10px;"></td></tr>
-    `).join('');
+    `;
+    }).join('');
 
     // Set up email data - sending to brindusanraull@gmail.com
     const mailOptions = {
@@ -184,18 +190,7 @@ Sent at: ${new Date().toLocaleString()}
                 `}
               </table>
 
-              <!-- CTA Button -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
-                <tr>
-                  <td align="center">
-                    <a href="https://www.auto1.com" style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                      Browse Cars on Auto1
-                    </a>
-                  </td>
-                </tr>
-              </table>
-
-              <p style="color: #666; font-size: 14px; margin-bottom: 0;">
+              <p style="color: #666; font-size: 14px; margin-bottom: 0; margin-top: 30px;">
                 Sent at: ${new Date().toLocaleString()}
               </p>
             </td>
