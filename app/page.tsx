@@ -58,11 +58,16 @@ export default function Home() {
         const data = doc.data();
         return {
           carId: doc.id,
-          ...data,
-          // Map url field to auto1Link
-          auto1Link: data.url || data.auto1Link,
-        };
-      }) as Car[];
+          makeModel: data.makeModel || '',
+          fullTitle: data.fullTitle || '',
+          year: data.year || '',
+          profit: data.profit || 0,
+          profitPercentage: data.profitPercentage || 0,
+          totalCost: data.totalCost || 0,
+          endAuctionPrice: data.endAuctionPrice || 0,
+          createdAt: data.createdAt,
+        } as Car;
+      });
 
       // Sort by profit descending on client side to ensure proper ordering
       const sortedCars = [...carsData].sort((a, b) => (b.profit || 0) - (a.profit || 0));
