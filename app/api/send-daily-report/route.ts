@@ -81,9 +81,9 @@ export async function GET(request: Request) {
 
     // Format currency helper
     const formatCurrency = (amount: number) => {
-      return new Intl.NumberFormat('en-US', {
+      return new Intl.NumberFormat('ro-RO', {
         style: 'currency',
-        currency: 'USD',
+        currency: 'EUR',
       }).format(amount);
     };
 
@@ -93,41 +93,42 @@ export async function GET(request: Request) {
 
     // Generate plain text version
     const textContent = `
-Daily Report: Top 10 Most Profitable Cars
+Raport Zilnic: Top 10 Cele Mai Profitabile Mașini
 
-Total Profit: ${formatCurrency(totalProfit)}
-Average Profit: ${formatCurrency(avgProfit)}
-Total Cars: ${topCars.length}
+Profit Mediu: ${formatCurrency(avgProfit)}
+Total Mașini: ${topCars.length}
 
 ${topCars.map((car, index) => `${index + 1}. ${car.makeModel} (${car.year})
    Profit: ${formatCurrency(car.profit)} (${car.profitPercentage?.toFixed(1)}%)
-   Cost: ${formatCurrency(car.totalCost)} | Auction: ${formatCurrency(car.endAuctionPrice)}
+   Cost: ${formatCurrency(car.totalCost)} | Licitație: ${formatCurrency(car.endAuctionPrice)}
    ${car.auto1Link ? `Link: ${car.auto1Link}` : ''}`).join('\n\n')}
 
-${topCars.length === 0 ? 'No profitable cars found at this time.' : ''}
+${topCars.length === 0 ? 'Nu s-au găsit mașini profitabile în acest moment.' : ''}
 
-Visit Auto1 to find great deals: https://www.auto1.com
+Vizitează Auto1 pentru oferte grozave: https://www.auto1.com
 
-Report generated at: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bucharest' })}
+Raport generat la: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bucharest' })}
     `;
 
     // Generate HTML table rows for cars
     const carsHtmlRows = topCars.map((car, index) => `
       <tr>
         <td style="padding: 15px; background-color: #f8f9fa; border-left: 4px solid #667eea;">
-          <strong style="color: #667eea; font-size: 18px;">${index + 1}. ${car.makeModel} (${car.year})</strong>
+          <strong style="color: #667eea; font-size: 18px;">
+            ${car.auto1Link ? `<a href="${car.auto1Link}" style="color: #667eea; text-decoration: none;">${index + 1}. ${car.makeModel} (${car.year})</a>` : `${index + 1}. ${car.makeModel} (${car.year})`}
+          </strong>
           <p style="margin: 5px 0 0 0; color: #666;">${car.fullTitle || ''}</p>
           <div style="margin-top: 10px;">
             <span style="color: #28a745; font-weight: bold; margin-right: 15px;">💰 Profit: ${formatCurrency(car.profit)}</span>
-            <span style="color: #666; margin-right: 15px;">📊 Margin: ${car.profitPercentage?.toFixed(1)}%</span>
+            <span style="color: #666; margin-right: 15px;">📊 Marjă: ${car.profitPercentage?.toFixed(1)}%</span>
           </div>
           <div style="margin-top: 5px;">
             <span style="color: #666; margin-right: 15px;">💵 Cost: ${formatCurrency(car.totalCost)}</span>
-            <span style="color: #666;">🔨 Auction: ${formatCurrency(car.endAuctionPrice)}</span>
+            <span style="color: #666;">🔨 Licitație: ${formatCurrency(car.endAuctionPrice)}</span>
           </div>
           ${car.auto1Link ? `
           <div style="margin-top: 10px;">
-            <a href="${car.auto1Link}" style="display: inline-block; padding: 8px 16px; background-color: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">View on Auto1</a>
+            <a href="${car.auto1Link}" style="display: inline-block; padding: 8px 16px; background-color: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">Vezi pe Auto1</a>
           </div>` : ''}
         </td>
       </tr>
@@ -138,7 +139,7 @@ Report generated at: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bu
     const mailOptions = {
       from: 'contact@az-translations.ro',
       to: 'brindusanraull@gmail.com',
-      subject: `Daily Report: Top 10 Most Profitable Cars - ${new Date().toLocaleDateString('ro-RO')}`,
+      subject: `Raport Zilnic: Top 10 Cele Mai Profitabile Mașini - ${new Date().toLocaleDateString('ro-RO')}`,
       text: textContent,
       html: `
 <!DOCTYPE html>
@@ -155,8 +156,8 @@ Report generated at: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bu
           <!-- Header -->
           <tr>
             <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
-              <h1 style="color: #ffffff; margin: 0; font-size: 28px;">📊 Daily Profit Report</h1>
-              <p style="color: #f0f0f0; margin: 10px 0 0 0;">Top 10 Most Profitable Cars</p>
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px;">📊 Raport Zilnic de Profit</h1>
+              <p style="color: #f0f0f0; margin: 10px 0 0 0;">Top 10 Cele Mai Profitabile Mașini</p>
               <p style="color: #f0f0f0; margin: 5px 0 0 0; font-size: 14px;">${new Date().toLocaleDateString('ro-RO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
             </td>
           </tr>
@@ -167,15 +168,11 @@ Report generated at: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bu
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="padding: 10px; text-align: center;">
-                    <p style="margin: 0; color: #666; font-size: 12px;">Total Profit</p>
-                    <p style="margin: 5px 0 0 0; color: #28a745; font-size: 24px; font-weight: bold;">${formatCurrency(totalProfit)}</p>
-                  </td>
-                  <td style="padding: 10px; text-align: center;">
-                    <p style="margin: 0; color: #666; font-size: 12px;">Average Profit</p>
+                    <p style="margin: 0; color: #666; font-size: 12px;">Profit Mediu</p>
                     <p style="margin: 5px 0 0 0; color: #667eea; font-size: 24px; font-weight: bold;">${formatCurrency(avgProfit)}</p>
                   </td>
                   <td style="padding: 10px; text-align: center;">
-                    <p style="margin: 0; color: #666; font-size: 12px;">Total Cars</p>
+                    <p style="margin: 0; color: #666; font-size: 12px;">Total Mașini</p>
                     <p style="margin: 5px 0 0 0; color: #764ba2; font-size: 24px; font-weight: bold;">${topCars.length}</p>
                   </td>
                 </tr>
@@ -187,14 +184,14 @@ Report generated at: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bu
           <tr>
             <td style="padding: 30px;">
               <p style="color: #333; font-size: 16px; line-height: 1.6; margin-top: 0;">
-                Here are today's top 10 most profitable cars based on current market analysis:
+                Iată cele mai profitabile 10 mașini de astăzi bazate pe analiza curentă a pieței:
               </p>
 
               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 20px 0;">
                 ${topCars.length > 0 ? carsHtmlRows : `
                 <tr>
                   <td style="padding: 30px; text-align: center; color: #666;">
-                    No profitable cars found at this time.
+                    Nu s-au găsit mașini profitabile în acest moment.
                   </td>
                 </tr>
                 `}
@@ -205,14 +202,14 @@ Report generated at: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bu
                 <tr>
                   <td align="center">
                     <a href="https://www.auto1.com" style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                      Browse Cars on Auto1
+                      Răsfoiește Mașinile pe Auto1
                     </a>
                   </td>
                 </tr>
               </table>
 
               <p style="color: #666; font-size: 14px; margin-bottom: 0;">
-                Report generated at: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bucharest' })}
+                Raport generat la: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bucharest' })}
               </p>
             </td>
           </tr>
@@ -221,10 +218,10 @@ Report generated at: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bu
           <tr>
             <td style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e0e0e0;">
               <p style="color: #999; font-size: 12px; margin: 0;">
-                CarBot - Your Automotive Market Intelligence
+                CarBot - Informații despre Piața Auto
               </p>
               <p style="color: #999; font-size: 11px; margin: 5px 0 0 0;">
-                Daily automated report sent at 16:00 Romania Time
+                Raport automat zilnic trimis la 20:05 ora României
               </p>
             </td>
           </tr>
