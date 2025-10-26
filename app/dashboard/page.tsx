@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { collection, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import Link from 'next/link';
 
 interface Car {
   carId: string;
@@ -57,10 +58,15 @@ export default function Dashboard() {
     );
 
     const unsubscribeCars = onSnapshot(carsQuery, (snapshot) => {
-      const carsData = snapshot.docs.map((doc) => ({
-        carId: doc.id,
-        ...doc.data(),
-      })) as Car[];
+      const carsData = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          carId: doc.id,
+          ...data,
+          // Map url field to auto1Link
+          auto1Link: data.url || data.auto1Link,
+        };
+      }) as Car[];
       setCars(carsData);
 
       // Calculate stats
@@ -208,10 +214,21 @@ export default function Dashboard() {
           <div className="lg:col-span-2 bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-xl">
             <h2 className="text-2xl font-bold text-white mb-6">Recent Cars</h2>
             <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-              {cars.map((car) => (
-                <div
+              {cars.map((car) => {
+                console.log('Rendering car card:', car.carId, 'Make:', car.makeModel);
+                return (
+                <Link
                   key={car.carId}
-                  className="bg-white/5 rounded-xl p-4 border border-white/10 hover:bg-white/10 transition-all duration-200"
+                  href={`/dashboard/${car.carId}`}
+                  className="block bg-white/5 rounded-xl p-4 border border-white/10 hover:bg-white/10 hover:border-purple-400/50 transition-all duration-200 cursor-pointer"
+                  onClick={(e) => {
+                    console.log('🚗 Card clicked!');
+                    console.log('Car ID:', car.carId);
+                    console.log('Make/Model:', car.makeModel);
+                    console.log('Target URL:', `/dashboard/${car.carId}`);
+                    console.log('Event:', e);
+                  }}
+                  onMouseEnter={() => console.log('👆 Mouse entered card:', car.carId)}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex-1">
@@ -247,8 +264,9 @@ export default function Dashboard() {
                       Added {formatDate(car.createdAt)}
                     </p>
                   </div>
-                </div>
-              ))}
+                </Link>
+              );
+              })}
               {cars.length === 0 && (
                 <div className="text-center py-12">
                   <p className="text-purple-200">No cars found</p>

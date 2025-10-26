@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { collection, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useDarkMode } from '@/lib/darkModeContext';
+import Link from 'next/link';
 
 interface Car {
   carId: string;
@@ -53,10 +54,15 @@ export default function Home() {
     );
 
     const unsubscribeCars = onSnapshot(carsQuery, (snapshot) => {
-      const carsData = snapshot.docs.map((doc) => ({
-        carId: doc.id,
-        ...doc.data(),
-      })) as Car[];
+      const carsData = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          carId: doc.id,
+          ...data,
+          // Map url field to auto1Link
+          auto1Link: data.url || data.auto1Link,
+        };
+      }) as Car[];
 
       // Sort by profit descending on client side to ensure proper ordering
       const sortedCars = [...carsData].sort((a, b) => (b.profit || 0) - (a.profit || 0));
@@ -194,9 +200,10 @@ export default function Home() {
         <div className={`rounded-3xl p-8 border shadow-2xl ${isDarkMode ? 'bg-gray-800/80 backdrop-blur-sm border-gray-700' : 'bg-white/80 backdrop-blur-sm border-gray-200'}`}>
             <div className="space-y-3 mb-6">
               {cars.slice((currentPage - 1) * carsPerPage, currentPage * carsPerPage).map((car, index) => (
-                <div
+                <Link
                   key={car.carId}
-                  className={`group relative rounded-xl p-3 border hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 ${isDarkMode ? 'bg-gradient-to-br from-gray-700 to-gray-800 border-gray-600 hover:border-indigo-400' : 'bg-gradient-to-br from-white to-gray-50 border-gray-200 hover:border-indigo-300'}`}
+                  href={`/car/${car.carId}`}
+                  className={`group relative rounded-xl p-3 border hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 cursor-pointer block ${isDarkMode ? 'bg-gradient-to-br from-gray-700 to-gray-800 border-gray-600 hover:border-indigo-400' : 'bg-gradient-to-br from-white to-gray-50 border-gray-200 hover:border-indigo-300'}`}
                 >
                   <div className="absolute top-2 left-2 bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-xs font-bold px-2 py-0.5 rounded-lg shadow-sm">
                     #{(currentPage - 1) * carsPerPage + index + 1}
@@ -234,7 +241,7 @@ export default function Home() {
                       <p className={`text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{formatDate(car.createdAt)}</p>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
               {cars.length === 0 && (
                 <div className="text-center py-12">
