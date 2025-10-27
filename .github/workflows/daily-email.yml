@@ -2,9 +2,9 @@ name: Send Daily Email Report
 
 on:
   schedule:
-    # Runs at 19:50 UTC = 21:50 Romania time (EET/winter time UTC+2)
-    # For summer time (EEST UTC+3), change to 18:50 UTC
-    - cron: '50 19 * * *'
+    # Runs at 20:20 UTC = 22:20 Romania time (EET/winter time UTC+2)
+    # For summer time (EEST UTC+3), change to 19:20 UTC
+    - cron: '20 20 * * *'
   workflow_dispatch:  # Allows manual trigger from GitHub Actions tab
 
 jobs:

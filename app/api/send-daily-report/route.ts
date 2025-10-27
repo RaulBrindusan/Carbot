@@ -199,18 +199,7 @@ Raport generat la: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Buch
                 `}
               </table>
 
-              <!-- CTA Button -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
-                <tr>
-                  <td align="center">
-                    <a href="https://www.auto1.com" style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                      Răsfoiește Mașinile pe Auto1
-                    </a>
-                  </td>
-                </tr>
-              </table>
-
-              <p style="color: #666; font-size: 14px; margin-bottom: 0;">
+              <p style="color: #666; font-size: 14px; margin-bottom: 0; margin-top: 30px;">
                 Raport generat la: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bucharest' })}
               </p>
             </td>
@@ -223,7 +212,7 @@ Raport generat la: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Buch
                 CarBot - Informații despre Piața Auto
               </p>
               <p style="color: #999; font-size: 11px; margin: 5px 0 0 0;">
-                Raport automat zilnic trimis la 21:50 ora României
+                Raport automat zilnic trimis la 22:20 ora României
               </p>
             </td>
           </tr>
