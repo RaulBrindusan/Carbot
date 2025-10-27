@@ -113,23 +113,25 @@ Raport generat la: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Buch
     // Generate HTML table rows for cars
     const carsHtmlRows = topCars.map((car, index) => `
       <tr>
-        <td style="padding: 15px; background-color: #f8f9fa; border-left: 4px solid #667eea;">
-          <strong style="color: #667eea; font-size: 18px;">
-            ${car.auto1Link ? `<a href="${car.auto1Link}" style="color: #667eea; text-decoration: none;">${index + 1}. ${car.makeModel} (${car.year})</a>` : `${index + 1}. ${car.makeModel} (${car.year})`}
-          </strong>
-          <p style="margin: 5px 0 0 0; color: #666;">${car.fullTitle || ''}</p>
-          <div style="margin-top: 10px;">
-            <span style="color: #28a745; font-weight: bold; margin-right: 15px;">💰 Profit: ${formatCurrency(car.profit)}</span>
-            <span style="color: #666; margin-right: 15px;">📊 Marjă: ${car.profitPercentage?.toFixed(1)}%</span>
-          </div>
-          <div style="margin-top: 5px;">
-            <span style="color: #666; margin-right: 15px;">💵 Cost: ${formatCurrency(car.totalCost)}</span>
-            <span style="color: #666;">🔨 Licitație: ${formatCurrency(car.endAuctionPrice)}</span>
-          </div>
-          ${car.auto1Link ? `
-          <div style="margin-top: 10px;">
-            <a href="${car.auto1Link}" style="display: inline-block; padding: 8px 16px; background-color: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">Vezi pe Auto1</a>
-          </div>` : ''}
+        <td style="padding: 0; background-color: #f8f9fa; border-left: 4px solid #667eea;">
+          ${car.auto1Link ? `<a href="${car.auto1Link}" style="display: block; padding: 15px; text-decoration: none; color: inherit; cursor: pointer;">` : `<div style="padding: 15px;">`}
+            <strong style="color: #667eea; font-size: 18px;">
+              ${index + 1}. ${car.makeModel} (${car.year})
+            </strong>
+            <p style="margin: 5px 0 0 0; color: #666;">${car.fullTitle || ''}</p>
+            <div style="margin-top: 10px;">
+              <span style="color: #28a745; font-weight: bold; margin-right: 15px;">💰 Profit: ${formatCurrency(car.profit)}</span>
+              <span style="color: #666; margin-right: 15px;">📊 Marjă: ${car.profitPercentage?.toFixed(1)}%</span>
+            </div>
+            <div style="margin-top: 5px;">
+              <span style="color: #666; margin-right: 15px;">💵 Cost: ${formatCurrency(car.totalCost)}</span>
+              <span style="color: #666;">🔨 Licitație: ${formatCurrency(car.endAuctionPrice)}</span>
+            </div>
+            ${car.auto1Link ? `
+            <div style="margin-top: 10px;">
+              <span style="display: inline-block; padding: 8px 16px; background-color: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">Vezi pe Auto1 →</span>
+            </div>` : ''}
+          ${car.auto1Link ? `</a>` : `</div>`}
         </td>
       </tr>
       <tr><td style="height: 10px;"></td></tr>
@@ -221,7 +223,7 @@ Raport generat la: ${new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Buch
                 CarBot - Informații despre Piața Auto
               </p>
               <p style="color: #999; font-size: 11px; margin: 5px 0 0 0;">
-                Raport automat zilnic trimis la 20:05 ora României
+                Raport automat zilnic trimis la 21:50 ora României
               </p>
             </td>
           </tr>
